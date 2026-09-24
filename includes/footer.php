@@ -97,27 +97,38 @@
         }
 
         // Hero Slider Logic
-        let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
+        if (slides.length > 0) {
+            let currentSlide = 0;
+            const totalSlides = slides.length;
 
-        function showSlide(index) {
-            slides.forEach((slide, i) => {
-                if (i === index) {
-                    slide.classList.remove('opacity-0');
-                    slide.classList.add('opacity-100');
-                    slide.style.zIndex = "10";
-                } else {
-                    slide.classList.remove('opacity-100');
-                    slide.classList.add('opacity-0');
-                    slide.style.zIndex = "0";
-                }
-            });
-        }
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    if (i === index) {
+                        slide.classList.remove('opacity-0');
+                        slide.classList.add('opacity-100');
+                        slide.style.zIndex = "10";
+                    } else {
+                        slide.classList.remove('opacity-100');
+                        slide.classList.add('opacity-0');
+                        slide.style.zIndex = "0";
+                    }
+                });
+            }
 
-        function nextSlide() {
-            currentSlide = (currentSlide + 1) % totalSlides;
+            window.nextSlide = function() {
+                currentSlide = (currentSlide + 1) % totalSlides;
+                showSlide(currentSlide);
+            };
+
+            window.prevSlide = function() {
+                currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                showSlide(currentSlide);
+            };
+
+            setInterval(window.nextSlide, 5000);
             showSlide(currentSlide);
+        }
         }
 
         function prevSlide() {

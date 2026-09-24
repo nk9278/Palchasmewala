@@ -111,8 +111,8 @@ if (isset($pdo)) {
                     <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate"><?php echo e($p['name']); ?></h3>
                     <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate"><?php echo e($p['sku']); ?></p>
                     <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3"><?php echo format_price($p['base_price']); ?></p>
-                    <a href="/cart.php?action=add&id=<?php echo $p['id']; ?>" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                    <a href="product.php?slug=<?php echo e($p['slug']); ?>" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        View Details
                     </a>
                 </div>
             </div>
@@ -147,8 +147,8 @@ if (isset($pdo)) {
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1"><?php echo e($p['name']); ?></h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1"><?php echo format_price($p['base_price']); ?></p>
-                        <a href="/cart.php?action=add&id=<?php echo $p['id']; ?>" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                        <a href="product.php?slug=<?php echo e($p['slug']); ?>" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                            View Details
                         </a>
                     </div>
                     <?php endforeach; ?>
@@ -160,8 +160,8 @@ if (isset($pdo)) {
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1"><?php echo e($p['name']); ?></h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1"><?php echo format_price($p['base_price']); ?></p>
-                        <a href="/cart.php?action=add&id=<?php echo $p['id']; ?>" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                        <a href="product.php?slug=<?php echo e($p['slug']); ?>" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                            View Details
                         </a>
                     </div>
                     <?php endforeach; ?>

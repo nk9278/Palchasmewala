@@ -50,3 +50,37 @@ function generate_slug($string) {
 
     return $slug;
 }
+
+/**
+ * Get Cart Count from Session
+ */
+function get_cart_count() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $count = 0;
+    if (!empty($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $item) {
+            $count += $item['quantity'];
+        }
+    }
+    return $count;
+}
+
+/**
+ * Check if user is logged in
+ */
+function is_logged_in() {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    return isset($_SESSION['user_id']);
+}
+
+/**
+ * Get current user ID
+ */
+function current_user_id() {
+    return is_logged_in() ? $_SESSION['user_id'] : null;
+}

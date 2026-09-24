@@ -219,7 +219,7 @@
                     </a>
                     <a href="/cart.php" class="text-gray-600 hover:text-pcwRed transition-colors relative">
                         <i class="fa-solid fa-cart-shopping text-lg"></i>
-                        <span class="absolute -top-2 -right-2 bg-pcwGold text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
+                        <span class="absolute -top-2 -right-2 bg-pcwGold text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full"><?php echo get_cart_count(); ?></span>
                     </a>
                 </div>
             </div>
