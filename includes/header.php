@@ -195,7 +195,7 @@
 
                 <!-- Logo (Smaller/Thinner) -->
                 <div class="flex-shrink-0 flex items-center justify-center cursor-pointer">
-                    <a href="#" class="flex flex-col items-center leading-none">
+                    <a href="/" class="flex flex-col items-center leading-none">
                         <!-- Updated Logo Image -->
                         <img src="/assets/Pal_logo.png" alt="Pal Chasme Wale Logo" class="h-10 md:h-12 w-auto object-contain">
                     </a>
@@ -203,34 +203,34 @@
 
                 <!-- Desktop Navigation Links -->
                 <div class="hidden lg:flex lg:items-center lg:space-x-8">
-                    <a href="#" class="text-gray-700 hover:text-pcwRed font-medium text-sm uppercase tracking-wide transition-colors">Eyeglasses</a>
-                    <a href="#" class="text-gray-700 hover:text-pcwRed font-medium text-sm uppercase tracking-wide transition-colors">Sunglasses</a>
-                    <a href="#" class="text-gray-700 hover:text-pcwRed font-medium text-sm uppercase tracking-wide transition-colors">Computer Glasses</a>
-                    <a href="#" class="text-gray-700 hover:text-pcwRed font-medium text-sm uppercase tracking-wide transition-colors">Contact Lenses</a>
+                    <a href="/shop.php?category=eyeglasses" class="text-gray-700 hover:text-pcwRed font-medium text-sm uppercase tracking-wide transition-colors">Eyeglasses</a>
+                    <a href="/shop.php?category=sunglasses" class="text-gray-700 hover:text-pcwRed font-medium text-sm uppercase tracking-wide transition-colors">Sunglasses</a>
+                    <a href="/shop.php?category=computer-glasses" class="text-gray-700 hover:text-pcwRed font-medium text-sm uppercase tracking-wide transition-colors">Computer Glasses</a>
+                    <a href="/shop.php?category=contact-lenses" class="text-gray-700 hover:text-pcwRed font-medium text-sm uppercase tracking-wide transition-colors">Contact Lenses</a>
                 </div>
 
                 <!-- Icons (Search, User, Cart) -->
                 <div class="flex items-center space-x-5">
-                    <button class="text-gray-600 hover:text-pcwRed transition-colors">
+                    <a href="/search.php" class="text-gray-600 hover:text-pcwRed transition-colors">
                         <i class="fa-solid fa-magnifying-glass text-lg"></i>
-                    </button>
-                    <button class="text-gray-600 hover:text-pcwRed transition-colors hidden sm:block">
+                    </a>
+                    <a href="/login.php" class="text-gray-600 hover:text-pcwRed transition-colors hidden sm:block">
                         <i class="fa-regular fa-user text-lg"></i>
-                    </button>
-                    <button class="text-gray-600 hover:text-pcwRed transition-colors relative">
+                    </a>
+                    <a href="/cart.php" class="text-gray-600 hover:text-pcwRed transition-colors relative">
                         <i class="fa-solid fa-cart-shopping text-lg"></i>
                         <span class="absolute -top-2 -right-2 bg-pcwGold text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">2</span>
-                    </button>
+                    </a>
                 </div>
             </div>
         </nav>
 
         <!-- Mobile Menu (Hidden by default) -->
         <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 px-4 py-4 space-y-3 shadow-lg absolute w-full">
-            <a href="#" class="block text-gray-800 hover:text-pcwRed font-medium text-lg border-b pb-2">Eyeglasses</a>
-            <a href="#" class="block text-gray-800 hover:text-pcwRed font-medium text-lg border-b pb-2">Sunglasses</a>
-            <a href="#" class="block text-gray-800 hover:text-pcwRed font-medium text-lg border-b pb-2">Tested Lenses</a>
-            <a href="#" class="block text-gray-800 hover:text-pcwRed font-medium text-lg border-b pb-2">Computer Glasses</a>
-            <a href="#" class="block text-gray-800 hover:text-pcwRed font-medium text-lg">Contact Lenses</a>
+            <a href="/shop.php?category=eyeglasses" class="block text-gray-800 hover:text-pcwRed font-medium text-lg border-b pb-2">Eyeglasses</a>
+            <a href="/shop.php?category=sunglasses" class="block text-gray-800 hover:text-pcwRed font-medium text-lg border-b pb-2">Sunglasses</a>
+            <a href="/shop.php?category=tested-lenses" class="block text-gray-800 hover:text-pcwRed font-medium text-lg border-b pb-2">Tested Lenses</a>
+            <a href="/shop.php?category=computer-glasses" class="block text-gray-800 hover:text-pcwRed font-medium text-lg border-b pb-2">Computer Glasses</a>
+            <a href="/shop.php?category=contact-lenses" class="block text-gray-800 hover:text-pcwRed font-medium text-lg">Contact Lenses</a>
         </div>
     </header>

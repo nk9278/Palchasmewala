@@ -77,8 +77,8 @@
             <div class="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
                 <p class="text-gray-500 text-xs sm:text-sm">&copy; 2026 Pal Chasme Wale. All rights reserved.</p>
                 <div class="flex gap-4 text-xs sm:text-sm text-gray-500">
-                    <a href="#" class="hover:text-white">Privacy Policy</a>
-                    <a href="#" class="hover:text-white">Terms of Service</a>
+                    <a href="/privacy.php" class="hover:text-white">Privacy Policy</a>
+                    <a href="/terms.php" class="hover:text-white">Terms of Service</a>
                 </div>
             </div>
         </div>

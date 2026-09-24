@@ -12,7 +12,7 @@
                     <h2 class="text-pcwGold font-serif text-lg md:text-2xl italic mb-2 sm:mb-3 tracking-widest">Est. 1991</h2>
                     <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">Crafting Luxury Vision<br>Since 1991*</h1>
                     <p class="text-gray-200 text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto font-light">Experience the perfect blend of style, comfort, and precision.</p>
-                    <a href="#" class="inline-block bg-pcwRed hover:bg-red-800 text-white font-semibold py-2.5 sm:py-3 px-8 sm:px-10 rounded-full transition-colors text-sm sm:text-lg shadow-lg">Shop Collection</a>
+                    <a href="/shop.php" class="inline-block bg-pcwRed hover:bg-red-800 text-white font-semibold py-2.5 sm:py-3 px-8 sm:px-10 rounded-full transition-colors text-sm sm:text-lg shadow-lg">Shop Collection</a>
                 </div>
             </div>
         </div>
@@ -25,7 +25,7 @@
                     <h2 class="text-pcwGold font-serif text-lg md:text-2xl italic mb-2 sm:mb-3 tracking-widest">Premium Collection</h2>
                     <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">Discover Your Perfect<br>Summer Look</h1>
                     <p class="text-gray-200 text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto font-light">Explore our wide range of UV protected designer sunglasses.</p>
-                    <a href="#" class="inline-block bg-pcwRed hover:bg-red-800 text-white font-semibold py-2.5 sm:py-3 px-8 sm:px-10 rounded-full transition-colors text-sm sm:text-lg shadow-lg">Explore Sunglasses</a>
+                    <a href="/shop.php?category=sunglasses" class="inline-block bg-pcwRed hover:bg-red-800 text-white font-semibold py-2.5 sm:py-3 px-8 sm:px-10 rounded-full transition-colors text-sm sm:text-lg shadow-lg">Explore Sunglasses</a>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@
                     <h2 class="text-pcwGold font-serif text-lg md:text-2xl italic mb-2 sm:mb-3 tracking-widest">Precision & Care</h2>
                     <h1 class="text-3xl sm:text-4xl md:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">Advanced Tested Lenses<br>For Clear Vision</h1>
                     <p class="text-gray-200 text-sm sm:text-lg md:text-xl mb-6 sm:mb-8 max-w-2xl mx-auto font-light">Crystal clear lenses crafted for your eye's ultimate comfort.</p>
-                    <a href="#" class="inline-block bg-pcwRed hover:bg-red-800 text-white font-semibold py-2.5 sm:py-3 px-8 sm:px-10 rounded-full transition-colors text-sm sm:text-lg shadow-lg">View Lenses</a>
+                    <a href="/shop.php?category=tested-lenses" class="inline-block bg-pcwRed hover:bg-red-800 text-white font-semibold py-2.5 sm:py-3 px-8 sm:px-10 rounded-full transition-colors text-sm sm:text-lg shadow-lg">View Lenses</a>
                 </div>
             </div>
         </div>
@@ -46,10 +46,10 @@
         <!-- Slider Controls -->
         <button onclick="prevSlide()" class="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 md:p-4 rounded-full hover:bg-pcwRed z-20 transition-colors">
             <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
-        </button>
+        </a>
         <button onclick="nextSlide()" class="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 md:p-4 rounded-full hover:bg-pcwRed z-20 transition-colors">
             <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
-        </button>
+        </a>
     </section>
 
     <!-- Scrolling Marquee Strip -->
@@ -87,9 +87,9 @@
                     <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Classic Gold Aviator</h3>
                     <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">Polarized Sunglasses</p>
                     <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹2,499</p>
-                    <button class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                         <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -102,9 +102,9 @@
                     <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Matte Black Wayfarer</h3>
                     <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">UV Protection</p>
                     <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹1,899</p>
-                    <button class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                         <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -117,9 +117,9 @@
                     <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Retro Round Frames</h3>
                     <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">Blue Light Blocking</p>
                     <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹1,499</p>
-                    <button class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                         <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -133,9 +133,9 @@
                     <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Titanium Rimless</h3>
                     <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">Lightweight Eyeglasses</p>
                     <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹3,299</p>
-                    <button class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                         <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -148,9 +148,9 @@
                     <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Sports Wrap-Around</h3>
                     <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">UV 400 Protection</p>
                     <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹1,999</p>
-                    <button class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                         <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -163,15 +163,15 @@
                     <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Clear Frame Vintage</h3>
                     <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">Anti-Reflective</p>
                     <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹2,199</p>
-                    <button class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                         <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
 
         <div class="text-center mt-8 sm:mt-12">
-            <a href="#" class="inline-block border border-pcwRed sm:border-2 text-pcwRed hover:bg-pcwRed hover:text-white text-sm sm:text-base font-bold py-2 sm:py-3 px-6 sm:px-8 rounded transition-colors">
+            <a href="/shop.php" class="inline-block border border-pcwRed sm:border-2 text-pcwRed hover:bg-pcwRed hover:text-white text-sm sm:text-base font-bold py-2 sm:py-3 px-6 sm:px-8 rounded transition-colors">
                 View All Products
             </a>
         </div>
@@ -185,7 +185,7 @@
                     <h2 class="text-xl sm:text-3xl font-bold text-pcwBlack uppercase tracking-wide">Premium Sunglasses</h2>
                     <div class="w-12 sm:w-16 h-1 bg-pcwRed mt-1 sm:mt-2"></div>
                 </div>
-                <a href="#" class="text-pcwRed text-sm sm:text-base font-semibold hover:underline hidden sm:block">View All <i class="fa-solid fa-arrow-right text-xs sm:text-sm"></i></a>
+                <a href="/shop.php?category=sunglasses" class="text-pcwRed text-sm sm:text-base font-semibold hover:underline hidden sm:block">View All <i class="fa-solid fa-arrow-right text-xs sm:text-sm"></i></a>
             </div>
 
             <!-- Continuous Slider Container -->
@@ -198,9 +198,9 @@
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Polarized Wayfarer</h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,199</p>
-                        <button class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Item 2 -->
@@ -210,9 +210,9 @@
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Classic Aviator Gold</h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,599</p>
-                        <button class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Item 3 -->
@@ -222,9 +222,9 @@
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Retro Round Shades</h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹1,899</p>
-                        <button class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Item 4 -->
@@ -234,9 +234,9 @@
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Sport Wrap-Around</h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹1,499</p>
-                        <button class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
+                        </a>
                     </div>
 
                     <!-- Item 5 -->
@@ -246,9 +246,9 @@
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Tortoise Shell Square</h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,299</p>
-                        <button class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
+                        </a>
                     </div>
 
                     <!-- REPEAT ITEMS FOR SEAMLESS LOOP -->
@@ -258,9 +258,9 @@
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Polarized Wayfarer</h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,199</p>
-                        <button class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
+                        </a>
                     </div>
 
                     <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
@@ -269,9 +269,9 @@
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Classic Aviator Gold</h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,599</p>
-                        <button class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
+                        </a>
                     </div>
 
                     <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
@@ -280,15 +280,15 @@
                         </div>
                         <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Retro Round Shades</h3>
                         <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹1,899</p>
-                        <button class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </button>
+                        </a>
                     </div>
                 </div>
             </div>
 
             <div class="mt-6 text-center sm:hidden">
-                <a href="#" class="text-pcwRed text-sm font-semibold hover:underline">View All <i class="fa-solid fa-arrow-right text-xs"></i></a>
+                <a href="/shop.php?category=sunglasses" class="text-pcwRed text-sm font-semibold hover:underline">View All <i class="fa-solid fa-arrow-right text-xs"></i></a>
             </div>
         </div>
     </section>
@@ -312,7 +312,7 @@
                         <h3 class="text-xs sm:text-lg font-bold text-pcwBlack">Blue Light Protection</h3>
                     </div>
                     <p class="text-gray-600 text-[10px] sm:text-sm mb-2 sm:mb-4 leading-snug sm:leading-relaxed flex-grow">Protect your eyes from digital screens with our advanced blue block technology.</p>
-                    <button class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
+                    <a href="/cart.php?action=add" class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
                 </div>
             </div>
             <!-- Lens 2 -->
@@ -324,7 +324,7 @@
                         <h3 class="text-xs sm:text-lg font-bold text-pcwBlack">Premium Progressives</h3>
                     </div>
                     <p class="text-gray-600 text-[10px] sm:text-sm mb-2 sm:mb-4 leading-snug sm:leading-relaxed flex-grow">Seamless transition between near, intermediate, and distance vision without any visible lines.</p>
-                    <button class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
+                    <a href="/cart.php?action=add" class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
                 </div>
             </div>
             <!-- Lens 3 -->
@@ -336,7 +336,7 @@
                         <h3 class="text-xs sm:text-lg font-bold text-pcwBlack">Anti-Glare Coating</h3>
                     </div>
                     <p class="text-gray-600 text-[10px] sm:text-sm mb-2 sm:mb-4 leading-snug sm:leading-relaxed flex-grow">Reduce reflections and improve night driving with our tested anti-reflective coating.</p>
-                    <button class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
+                    <a href="/cart.php?action=add" class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
                 </div>
             </div>
             <!-- Lens 4 (Added for full width balance) -->
@@ -348,7 +348,7 @@
                         <h3 class="text-xs sm:text-lg font-bold text-pcwBlack">Photochromic Lenses</h3>
                     </div>
                     <p class="text-gray-600 text-[10px] sm:text-sm mb-2 sm:mb-4 leading-snug sm:leading-relaxed flex-grow">Lenses that automatically darken in sunlight and turn clear indoors for all-day comfort.</p>
-                    <button class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
+                    <a href="/cart.php?action=add" class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
                 </div>
             </div>
         </div>
@@ -422,8 +422,7 @@
                                 Explore Tested Lenses
                                 <i class="fa-solid fa-arrow-right"></i>
                             </a>
-                            <a href="#shop-categories"
-                               class="inline-flex items-center gap-2 border border-white/70 hover:bg-white hover:text-pcwBlack text-white font-semibold px-4 py-2 sm:px-7 sm:py-3 rounded-full transition-colors text-xs sm:text-base">
+                            <a href="/shop.php" class="inline-flex items-center gap-2 border border-white/70 hover:bg-white hover:text-pcwBlack text-white font-semibold px-4 py-2 sm:px-7 sm:py-3 rounded-full transition-colors text-xs sm:text-base">
                                 Shop Eyewear
                             </a>
                         </div>
