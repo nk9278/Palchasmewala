@@ -31,65 +31,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     $reason = trim($_POST['reason'] ?? 'User requested cancellation');
 
-    // Check if order is eligible
+// Check if order is eligible visually (actual check happens in function)
     if (in_array($order['order_status'], ['pending', 'confirmed'])) {
-        try {
-            $pdo->beginTransaction();
-
-            // Re-fetch lock
-            $lock = $pdo->prepare("SELECT order_status FROM orders WHERE id = ? AND user_id = ? FOR UPDATE");
-            $lock->execute([$order_id, $user_id]);
-            $o_lock = $lock->fetch();
-
-            if (in_array($o_lock['order_status'], ['pending', 'confirmed'])) {
-                // Update Order Status
-                $pdo->prepare("UPDATE orders SET order_status = 'cancelled' WHERE id = ?")->execute([$order_id]);
-
-                // Fetch Items
-                $items = $pdo->prepare("SELECT * FROM order_items WHERE order_id = ?");
-                $items->execute([$order_id]);
-
-                $upd_stock = $pdo->prepare("UPDATE product_variants SET stock_quantity = stock_quantity + ? WHERE id = ?");
-                $ins_inv_trans = $pdo->prepare("INSERT INTO inventory_transactions (product_id, variant_id, transaction_type, quantity, previous_quantity, new_quantity, reference_type, reference_id, note) VALUES (?, ?, 'cancellation', ?, ?, ?, 'order', ?, ?)");
-
-                foreach ($items->fetchAll() as $item) {
-                    if ($item['variant_id']) {
-                        // We need the current stock again to log properly
-                        $stk = $pdo->prepare("SELECT stock_quantity FROM product_variants WHERE id = ? FOR UPDATE");
-                        $stk->execute([$item['variant_id']]);
-                        $curr_stk = $stk->fetchColumn();
-
-                        $upd_stock->execute([$item['quantity'], $item['variant_id']]);
-                        $new_stock = $curr_stk + $item['quantity'];
-
-                        $ins_inv_trans->execute([$item['product_id'], $item['variant_id'], $item['quantity'], $curr_stk, $new_stock, $order_id, $reason]);
-                    }
-                }
-
-                // Status History
-                $pdo->prepare("INSERT INTO order_status_history (order_id, old_status, new_status, changed_by, note) VALUES (?, ?, 'cancelled', ?, ?)")->execute([$order_id, $o_lock['order_status'], $user_id, $reason]);
-
-                // If payment was online and paid, mark refund pending.
-                if ($order['payment_method'] === 'ONLINE' && $order['payment_status'] === 'paid') {
-                    $pdo->prepare("UPDATE orders SET payment_status = 'refund_pending' WHERE id = ?")->execute([$order_id]);
-                    $pdo->prepare("INSERT INTO refunds (order_id, amount, reason, status) VALUES (?, ?, ?, 'pending')")->execute([$order_id, $order['grand_total'], $reason]);
-                }
-
-                $pdo->commit();
-                $success = "Order cancelled successfully.";
-                $order['order_status'] = 'cancelled';
-            } else {
-                $pdo->rollBack();
-                $error = "Order cannot be cancelled at this stage.";
-            }
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            $error = "Failed to cancel order: " . $e->getMessage();
+        $cancel_result = cancel_order($pdo, $order_id, $reason, $user_id);
+        if ($cancel_result['success']) {
+            $success = "Order cancelled successfully.";
+            $order['order_status'] = 'cancelled';
+        } else {
+            $error = $cancel_result['error'];
         }
     } else {
         $error = "Order cannot be cancelled at this stage.";
     }
 }
+
 
 // Fetch related data
 $items_stmt = $pdo->prepare("SELECT * FROM order_items WHERE order_id = ?");

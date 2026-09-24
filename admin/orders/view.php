@@ -15,18 +15,28 @@ if (!$order) die("Order not found.");
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!verify_csrf($_POST['csrf_token'] ?? '')) die("CSRF validation failed.");
 
-    $new_status = $_POST['order_status'] ?? '';
+$new_status = $_POST['order_status'] ?? '';
     if ($new_status && $new_status !== $order['order_status']) {
-        $pdo->beginTransaction();
-        try {
-            $pdo->prepare("UPDATE orders SET order_status = ? WHERE id = ?")->execute([$new_status, $id]);
-            $pdo->prepare("INSERT INTO order_status_history (order_id, old_status, new_status, changed_by, note) VALUES (?, ?, ?, ?, ?)")
-                ->execute([$id, $order['order_status'], $new_status, null, 'Status updated by Admin']);
-            $pdo->commit();
-            redirect("admin/orders/view.php?id=$id");
-        } catch (Exception $e) {
-            $pdo->rollBack();
-            $error = "Failed to update status.";
+        if ($new_status === 'cancelled') {
+            // Use unified cancellation logic to ensure inventory restores
+            $cancel_result = cancel_order($pdo, $id, 'Admin updated status to cancelled', null);
+            if ($cancel_result['success']) {
+                redirect("admin/orders/view.php?id=$id");
+            } else {
+                $error = $cancel_result['error'];
+            }
+        } else {
+            $pdo->beginTransaction();
+            try {
+                $pdo->prepare("UPDATE orders SET order_status = ? WHERE id = ?")->execute([$new_status, $id]);
+                $pdo->prepare("INSERT INTO order_status_history (order_id, old_status, new_status, changed_by, note) VALUES (?, ?, ?, ?, ?)")
+                    ->execute([$id, $order['order_status'], $new_status, null, 'Status updated by Admin']);
+                $pdo->commit();
+                redirect("admin/orders/view.php?id=$id");
+            } catch (Exception $e) {
+                $pdo->rollBack();
+                $error = "Failed to update status.";
+            }
         }
     }
 }
