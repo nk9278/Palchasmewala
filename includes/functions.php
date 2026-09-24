@@ -32,3 +32,21 @@ function redirect($path) {
 function format_price($amount) {
     return CURRENCY . number_format($amount, 2);
 }
+
+/**
+ * Generate a URL-friendly slug
+ */
+function generate_slug($string) {
+    $slug = preg_replace('~[^\pL\d]+~u', '-', $string);
+    $slug = iconv('utf-8', 'us-ascii//TRANSLIT', $slug);
+    $slug = preg_replace('~[^-\w]+~', '', $slug);
+    $slug = trim($slug, '-');
+    $slug = preg_replace('~-+~', '-', $slug);
+    $slug = strtolower($slug);
+
+    if (empty($slug)) {
+        return 'n-a';
+    }
+
+    return $slug;
+}

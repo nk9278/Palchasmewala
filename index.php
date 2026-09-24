@@ -1,6 +1,25 @@
 <?php include __DIR__ . "/includes/header.php"; ?>
 
 
+<?php
+// includes/db.php is already included via header.php which includes config and functions.
+// Actually header.php only includes config and functions. We should include db.php in header or index.
+
+$bestsellers = [];
+$premium = [];
+$active_brands = [];
+
+if (isset($pdo)) {
+    try {
+        $bestsellers = $pdo->query("SELECT p.*, (SELECT image_path FROM product_images WHERE product_id = p.id AND is_primary = 1 LIMIT 1) as primary_image FROM products p WHERE p.bestseller = 1 AND p.status = 'active' ORDER BY p.sort_order ASC LIMIT 6")->fetchAll();
+        $premium = $pdo->query("SELECT p.*, (SELECT image_path FROM product_images WHERE product_id = p.id AND is_primary = 1 LIMIT 1) as primary_image FROM products p JOIN categories c ON p.category_id = c.id WHERE c.slug = 'sunglasses' AND p.status = 'active' ORDER BY p.sort_order ASC LIMIT 10")->fetchAll();
+        $active_brands = $pdo->query("SELECT name FROM brands WHERE status = 'active' ORDER BY sort_order ASC")->fetchAll();
+    } catch (Exception $e) {}
+}
+?>
+
+
+
     <!-- Hero Banner Slider Section -->
     <section class="relative w-full h-[60vh] min-h-[400px] sm:min-h-[500px] bg-gray-900 overflow-hidden" id="hero-slider">
 
@@ -46,10 +65,10 @@
         <!-- Slider Controls -->
         <button onclick="prevSlide()" class="absolute left-2 sm:left-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 md:p-4 rounded-full hover:bg-pcwRed z-20 transition-colors">
             <i class="fa-solid fa-chevron-left text-sm sm:text-base"></i>
-        </a>
+        </button>
         <button onclick="nextSlide()" class="absolute right-2 sm:right-4 top-1/2 transform -translate-y-1/2 bg-black/50 text-white p-2 md:p-4 rounded-full hover:bg-pcwRed z-20 transition-colors">
             <i class="fa-solid fa-chevron-right text-sm sm:text-base"></i>
-        </a>
+        </button>
     </section>
 
     <!-- Scrolling Marquee Strip -->
@@ -76,101 +95,31 @@
         </div>
 
         <!-- grid-cols-2 for mobile, then md:3, lg:6 -->
+
         <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-6">
-            <!-- Product Card 1 -->
+            <?php foreach($bestsellers as $p): ?>
             <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow relative">
-                <div class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-pcwBlack text-white text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 z-10 rounded">Bestseller</div>
+                <?php if($p['new_arrival']): ?>
+                    <div class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-pcwRed text-white text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 z-10 rounded">New</div>
+                <?php else: ?>
+                    <div class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-pcwBlack text-white text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 z-10 rounded">Bestseller</div>
+                <?php endif; ?>
                 <div class="product-image-frame">
-                    <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" alt="Classic Aviator" class="hover-scale">
+                    <img src="<?php echo e($p['primary_image'] ?? 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80'); ?>" alt="<?php echo e($p['name']); ?>" class="hover-scale">
                 </div>
                 <div class="p-2 sm:p-4 text-center">
-                    <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Classic Gold Aviator</h3>
-                    <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">Polarized Sunglasses</p>
-                    <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹2,499</p>
-                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                    <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate"><?php echo e($p['name']); ?></h3>
+                    <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate"><?php echo e($p['sku']); ?></p>
+                    <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3"><?php echo format_price($p['base_price']); ?></p>
+                    <a href="/cart.php?action=add&id=<?php echo $p['id']; ?>" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                         <i class="fa-solid fa-cart-plus"></i> Add to Cart
                     </a>
                 </div>
             </div>
-
-            <!-- Product Card 2 -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow relative">
-                <div class="product-image-frame">
-                    <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80" alt="Wayfarer Style" class="hover-scale">
-                </div>
-                <div class="p-2 sm:p-4 text-center">
-                    <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Matte Black Wayfarer</h3>
-                    <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">UV Protection</p>
-                    <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹1,899</p>
-                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </a>
-                </div>
-            </div>
-
-            <!-- Product Card 3 -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow relative">
-                <div class="product-image-frame">
-                    <img src="https://images.unsplash.com/photo-1582142407894-ec85a1260a46?auto=format&fit=crop&w=500&q=80" alt="Round Blue Light" class="hover-scale">
-                </div>
-                <div class="p-2 sm:p-4 text-center">
-                    <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Retro Round Frames</h3>
-                    <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">Blue Light Blocking</p>
-                    <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹1,499</p>
-                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </a>
-                </div>
-            </div>
-
-            <!-- Product Card 4 -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow relative">
-                 <div class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-pcwRed text-white text-[9px] sm:text-xs font-bold px-1.5 py-0.5 sm:px-2 sm:py-1 z-10 rounded">New</div>
-                <div class="product-image-frame">
-                    <img src="https://images.unsplash.com/photo-1577803645773-f96470509666?auto=format&fit=crop&w=500&q=80" alt="Premium Specs" class="hover-scale">
-                </div>
-                <div class="p-2 sm:p-4 text-center">
-                    <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Titanium Rimless</h3>
-                    <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">Lightweight Eyeglasses</p>
-                    <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹3,299</p>
-                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </a>
-                </div>
-            </div>
-
-            <!-- Product Card 5 (Added to fill width) -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow relative">
-                <div class="product-image-frame">
-                    <img src="https://images.unsplash.com/photo-1508296695146-257a814070b4?auto=format&fit=crop&w=500&q=80" alt="Sports Shades" class="hover-scale">
-                </div>
-                <div class="p-2 sm:p-4 text-center">
-                    <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Sports Wrap-Around</h3>
-                    <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">UV 400 Protection</p>
-                    <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹1,999</p>
-                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </a>
-                </div>
-            </div>
-
-            <!-- Product Card 6 (Added to fill width) -->
-            <div class="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden group hover:shadow-md transition-shadow relative">
-                <div class="product-image-frame">
-                    <img src="https://images.unsplash.com/photo-1589642380614-4a8c2147b857?auto=format&fit=crop&w=500&q=80" alt="Transparent Frames" class="hover-scale">
-                </div>
-                <div class="p-2 sm:p-4 text-center">
-                    <h3 class="font-semibold text-xs sm:text-base text-gray-900 mb-0.5 sm:mb-1 truncate">Clear Frame Vintage</h3>
-                    <p class="text-gray-500 text-[10px] sm:text-xs mb-1 sm:mb-2 truncate">Anti-Reflective</p>
-                    <p class="font-bold text-sm sm:text-lg text-pcwBlack mb-2 sm:mb-3">₹2,199</p>
-                    <a href="/cart.php?action=add" class="w-full bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                    </a>
-                </div>
-            </div>
+            <?php endforeach; ?>
         </div>
-
         <div class="text-center mt-8 sm:mt-12">
+
             <a href="/shop.php" class="inline-block border border-pcwRed sm:border-2 text-pcwRed hover:bg-pcwRed hover:text-white text-sm sm:text-base font-bold py-2 sm:py-3 px-6 sm:px-8 rounded transition-colors">
                 View All Products
             </a>
@@ -191,102 +140,33 @@
             <!-- Continuous Slider Container -->
             <div class="slider-container">
                 <div class="slider-track">
-                    <!-- Item 1 -->
+                    <?php foreach($premium as $p): ?>
                     <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
                         <div class="premium-product-image-frame">
-                            <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80" alt="Sunglasses" class="hover-scale">
+                            <img src="<?php echo e($p['primary_image'] ?? 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80'); ?>" alt="<?php echo e($p['name']); ?>" class="hover-scale">
                         </div>
-                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Polarized Wayfarer</h3>
-                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,199</p>
-                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1"><?php echo e($p['name']); ?></h3>
+                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1"><?php echo format_price($p['base_price']); ?></p>
+                        <a href="/cart.php?action=add&id=<?php echo $p['id']; ?>" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
                         </a>
                     </div>
-
-                    <!-- Item 2 -->
+                    <?php endforeach; ?>
+                    <!-- Duplicate for infinite scroll -->
+                    <?php foreach($premium as $p): ?>
                     <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
                         <div class="premium-product-image-frame">
-                            <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" alt="Sunglasses" class="hover-scale">
+                            <img src="<?php echo e($p['primary_image'] ?? 'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80'); ?>" alt="<?php echo e($p['name']); ?>" class="hover-scale">
                         </div>
-                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Classic Aviator Gold</h3>
-                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,599</p>
-                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
+                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1"><?php echo e($p['name']); ?></h3>
+                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1"><?php echo format_price($p['base_price']); ?></p>
+                        <a href="/cart.php?action=add&id=<?php echo $p['id']; ?>" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
                             <i class="fa-solid fa-cart-plus"></i> Add to Cart
                         </a>
                     </div>
-
-                    <!-- Item 3 -->
-                    <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
-                        <div class="premium-product-image-frame">
-                            <img src="https://images.unsplash.com/photo-1589642380614-4a8c2147b857?auto=format&fit=crop&w=500&q=80" alt="Sunglasses" class="hover-scale">
-                        </div>
-                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Retro Round Shades</h3>
-                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹1,899</p>
-                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </a>
-                    </div>
-
-                    <!-- Item 4 -->
-                    <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
-                        <div class="premium-product-image-frame">
-                            <img src="https://images.unsplash.com/photo-1508296695146-257a814070b4?auto=format&fit=crop&w=500&q=80" alt="Sunglasses" class="hover-scale">
-                        </div>
-                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Sport Wrap-Around</h3>
-                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹1,499</p>
-                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </a>
-                    </div>
-
-                    <!-- Item 5 -->
-                    <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
-                        <div class="premium-product-image-frame">
-                            <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80" alt="Sunglasses" class="hover-scale">
-                        </div>
-                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Tortoise Shell Square</h3>
-                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,299</p>
-                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </a>
-                    </div>
-
-                    <!-- REPEAT ITEMS FOR SEAMLESS LOOP -->
-                    <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
-                        <div class="premium-product-image-frame">
-                            <img src="https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=500&q=80" alt="Sunglasses" class="hover-scale">
-                        </div>
-                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Polarized Wayfarer</h3>
-                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,199</p>
-                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </a>
-                    </div>
-
-                    <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
-                        <div class="premium-product-image-frame">
-                            <img src="https://images.unsplash.com/photo-1572635196237-14b3f281503f?auto=format&fit=crop&w=500&q=80" alt="Sunglasses" class="hover-scale">
-                        </div>
-                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Classic Aviator Gold</h3>
-                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹2,599</p>
-                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </a>
-                    </div>
-
-                    <div class="bg-white p-2 sm:p-4 rounded-lg shadow-sm border border-gray-200 group product-card">
-                        <div class="premium-product-image-frame">
-                            <img src="https://images.unsplash.com/photo-1589642380614-4a8c2147b857?auto=format&fit=crop&w=500&q=80" alt="Sunglasses" class="hover-scale">
-                        </div>
-                        <h3 class="font-bold text-xs sm:text-lg text-pcwBlack truncate mt-1">Retro Round Shades</h3>
-                        <p class="text-pcwRed font-bold text-sm sm:text-xl mt-0.5 sm:mt-1">₹1,899</p>
-                        <a href="/cart.php?action=add" class="w-full mt-2 sm:mt-3 bg-white border border-pcwRed text-pcwRed hover:bg-pcwRed hover:text-white text-[11px] sm:text-sm font-bold py-1.5 sm:py-2 rounded transition-colors flex items-center justify-center gap-1">
-                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-                        </a>
-                    </div>
+                    <?php endforeach; ?>
                 </div>
             </div>
-
             <div class="mt-6 text-center sm:hidden">
                 <a href="/shop.php?category=sunglasses" class="text-pcwRed text-sm font-semibold hover:underline">View All <i class="fa-solid fa-arrow-right text-xs"></i></a>
             </div>
@@ -312,7 +192,7 @@
                         <h3 class="text-xs sm:text-lg font-bold text-pcwBlack">Blue Light Protection</h3>
                     </div>
                     <p class="text-gray-600 text-[10px] sm:text-sm mb-2 sm:mb-4 leading-snug sm:leading-relaxed flex-grow">Protect your eyes from digital screens with our advanced blue block technology.</p>
-                    <a href="/cart.php?action=add" class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
+                    <button class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
                 </div>
             </div>
             <!-- Lens 2 -->
@@ -324,7 +204,7 @@
                         <h3 class="text-xs sm:text-lg font-bold text-pcwBlack">Premium Progressives</h3>
                     </div>
                     <p class="text-gray-600 text-[10px] sm:text-sm mb-2 sm:mb-4 leading-snug sm:leading-relaxed flex-grow">Seamless transition between near, intermediate, and distance vision without any visible lines.</p>
-                    <a href="/cart.php?action=add" class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
+                    <button class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
                 </div>
             </div>
             <!-- Lens 3 -->
@@ -336,7 +216,7 @@
                         <h3 class="text-xs sm:text-lg font-bold text-pcwBlack">Anti-Glare Coating</h3>
                     </div>
                     <p class="text-gray-600 text-[10px] sm:text-sm mb-2 sm:mb-4 leading-snug sm:leading-relaxed flex-grow">Reduce reflections and improve night driving with our tested anti-reflective coating.</p>
-                    <a href="/cart.php?action=add" class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
+                    <button class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
                 </div>
             </div>
             <!-- Lens 4 (Added for full width balance) -->
@@ -348,7 +228,7 @@
                         <h3 class="text-xs sm:text-lg font-bold text-pcwBlack">Photochromic Lenses</h3>
                     </div>
                     <p class="text-gray-600 text-[10px] sm:text-sm mb-2 sm:mb-4 leading-snug sm:leading-relaxed flex-grow">Lenses that automatically darken in sunlight and turn clear indoors for all-day comfort.</p>
-                    <a href="/cart.php?action=add" class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
+                    <button class="text-pcwRed text-[10px] sm:text-base font-bold hover:text-pcwBlack transition-colors tracking-wide text-left mt-auto">Learn More &rarr;</button>
                 </div>
             </div>
         </div>
@@ -439,11 +319,9 @@
             <p class="text-gray-400 text-xs sm:text-base mb-6 sm:mb-10 max-w-2xl mx-auto">We house an exclusive collection of luxury eyewear brands to give you the perfect look and ultimate comfort.</p>
 
             <div class="flex flex-wrap justify-center items-center gap-6 sm:gap-10 md:gap-20 opacity-70">
-                <span class="text-white text-base sm:text-2xl font-bold tracking-widest uppercase">Ray-Ban</span>
-                <span class="text-white text-base sm:text-2xl font-serif italic">Oakley</span>
-                <span class="text-white text-base sm:text-2xl font-light uppercase tracking-widest">Gucci</span>
-                <span class="text-white text-base sm:text-2xl font-bold">Vogue</span>
-                <span class="text-white text-base sm:text-2xl font-serif">Fastrack</span>
+                <?php foreach($active_brands as $b): ?>
+                    <span class="text-white text-base sm:text-2xl font-bold tracking-widest uppercase"><?php echo e($b['name']); ?></span>
+                <?php endforeach; ?>
             </div>
         </div>
     </section>
