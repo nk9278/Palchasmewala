@@ -247,3 +247,145 @@ CREATE TABLE IF NOT EXISTS `wishlist_items` (
 ALTER TABLE `user_addresses` ADD CONSTRAINT `fk_address_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE;
 ALTER TABLE `wishlist_items` ADD CONSTRAINT `fk_wishlist_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE;
 ALTER TABLE `wishlist_items` ADD CONSTRAINT `fk_wishlist_product` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE;
+
+
+-- PHASE 4: Orders, Payments, Returns, History
+
+CREATE TABLE IF NOT EXISTS `orders` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_number` varchar(50) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `subtotal` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `discount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `shipping_charge` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `tax_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `grand_total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `currency` varchar(10) NOT NULL DEFAULT 'INR',
+  `payment_method` enum('COD', 'ONLINE') NOT NULL DEFAULT 'COD',
+  `payment_status` enum('pending', 'authorized', 'paid', 'failed', 'refund_pending', 'refunded', 'partially_refunded') NOT NULL DEFAULT 'pending',
+  `order_status` enum('pending', 'confirmed', 'processing', 'packed', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'returned', 'refunded') NOT NULL DEFAULT 'pending',
+  `shipping_status` varchar(50) DEFAULT NULL,
+  `customer_notes` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `order_number` (`order_number`),
+  KEY `user_id` (`user_id`),
+  KEY `order_status` (`order_status`),
+  KEY `payment_status` (`payment_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `order_addresses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `address_line_1` varchar(255) NOT NULL,
+  `address_line_2` varchar(255) DEFAULT NULL,
+  `landmark` varchar(255) DEFAULT NULL,
+  `city` varchar(100) NOT NULL,
+  `state` varchar(100) NOT NULL,
+  `pincode` varchar(20) NOT NULL,
+  `address_type` varchar(20) DEFAULT 'home',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `order_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `variant_id` int(11) DEFAULT NULL,
+  `product_name` varchar(255) NOT NULL,
+  `sku` varchar(100) NOT NULL,
+  `variant_name` varchar(255) DEFAULT NULL,
+  `quantity` int(11) NOT NULL,
+  `unit_price` decimal(10,2) NOT NULL,
+  `discount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `tax` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `line_total` decimal(10,2) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `order_status_history` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `old_status` varchar(50) DEFAULT NULL,
+  `new_status` varchar(50) NOT NULL,
+  `changed_by` int(11) DEFAULT NULL,
+  `note` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `payments` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `payment_method` varchar(50) NOT NULL,
+  `gateway` varchar(50) DEFAULT NULL,
+  `transaction_id` varchar(255) DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `currency` varchar(10) NOT NULL DEFAULT 'INR',
+  `status` varchar(50) NOT NULL,
+  `gateway_response` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`),
+  KEY `transaction_id` (`transaction_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `returns` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `status` enum('requested', 'approved', 'rejected', 'received', 'refunded', 'cancelled') NOT NULL DEFAULT 'requested',
+  `reason` varchar(255) NOT NULL,
+  `customer_notes` text,
+  `admin_notes` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`),
+  KEY `user_id` (`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `return_items` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `return_id` int(11) NOT NULL,
+  `order_item_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `return_id` (`return_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `refunds` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `payment_id` int(11) DEFAULT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `reason` varchar(255) DEFAULT NULL,
+  `status` varchar(50) NOT NULL DEFAULT 'pending',
+  `refund_reference` varchar(255) DEFAULT NULL,
+  `processed_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Foreign Keys
+ALTER TABLE `orders` ADD CONSTRAINT `fk_order_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT;
+ALTER TABLE `order_addresses` ADD CONSTRAINT `fk_orderaddr_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;
+ALTER TABLE `order_items` ADD CONSTRAINT `fk_orderitem_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;
+ALTER TABLE `order_status_history` ADD CONSTRAINT `fk_orderhist_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;
+ALTER TABLE `payments` ADD CONSTRAINT `fk_payment_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;
+ALTER TABLE `returns` ADD CONSTRAINT `fk_return_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;
+ALTER TABLE `returns` ADD CONSTRAINT `fk_return_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT;
+ALTER TABLE `return_items` ADD CONSTRAINT `fk_returnitem_return` FOREIGN KEY (`return_id`) REFERENCES `returns`(`id`) ON DELETE CASCADE;
+ALTER TABLE `return_items` ADD CONSTRAINT `fk_returnitem_orderitem` FOREIGN KEY (`order_item_id`) REFERENCES `order_items`(`id`) ON DELETE RESTRICT;
+ALTER TABLE `refunds` ADD CONSTRAINT `fk_refund_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;

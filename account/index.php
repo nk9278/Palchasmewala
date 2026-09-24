@@ -25,7 +25,7 @@ $user_id = current_user_id();
                     <a href="index.php" class="px-6 py-3 font-semibold text-pcwRed bg-gray-50 border-l-4 border-pcwRed">Dashboard</a>
                     <a href="profile.php" class="px-6 py-3 text-gray-600 hover:text-pcwBlack hover:bg-gray-50 transition-colors">Profile Information</a>
                     <a href="addresses.php" class="px-6 py-3 text-gray-600 hover:text-pcwBlack hover:bg-gray-50 transition-colors">Manage Addresses</a>
-                    <a href="#" class="px-6 py-3 text-gray-400 cursor-not-allowed">My Orders (Coming Soon)</a>
+                    <a href="orders.php" class="px-6 py-3 text-gray-600 hover:text-pcwBlack hover:bg-gray-50 transition-colors">My Orders</a>
                     <a href="../logout.php" class="px-6 py-3 text-red-500 hover:bg-red-50 transition-colors border-t mt-2">Logout</a>
                 </div>
             </div>
@@ -56,7 +56,7 @@ $user_id = current_user_id();
                     </div>
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 opacity-50 cursor-not-allowed">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer hover:shadow-md transition-shadow" onclick="window.location='orders.php'">
                     <div class="w-12 h-12 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center text-xl">
                         <i class="fa-solid fa-box"></i>
                     </div>

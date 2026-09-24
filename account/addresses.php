@@ -70,7 +70,7 @@ $addresses = $addresses->fetchAll();
                     <a href="index.php" class="px-6 py-3 text-gray-600 hover:text-pcwBlack hover:bg-gray-50 transition-colors">Dashboard</a>
                     <a href="profile.php" class="px-6 py-3 text-gray-600 hover:text-pcwBlack hover:bg-gray-50 transition-colors">Profile Information</a>
                     <a href="addresses.php" class="px-6 py-3 font-semibold text-pcwRed bg-gray-50 border-l-4 border-pcwRed transition-colors">Manage Addresses</a>
-                    <a href="#" class="px-6 py-3 text-gray-400 cursor-not-allowed">My Orders (Coming Soon)</a>
+                    <a href="orders.php" class="px-6 py-3 text-gray-600 hover:text-pcwBlack hover:bg-gray-50 transition-colors">My Orders</a>
                     <a href="../logout.php" class="px-6 py-3 text-red-500 hover:bg-red-50 transition-colors border-t mt-2">Logout</a>
                 </div>
             </div>

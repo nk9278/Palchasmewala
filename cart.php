@@ -119,7 +119,7 @@ if ($action) {
         if(!$error) $success = "Cart updated successfully.";
         redirect('cart.php');
     }
-    elseif ($action === 'remove' && isset($_GET['key'])) {
+    elseif ($action === 'remove' && isset($_GET['key']) && $_SERVER['REQUEST_METHOD'] === 'POST') {
         $key = $_GET['key'];
         if (isset($_SESSION['cart'][$key])) {
             unset($_SESSION['cart'][$key]);
