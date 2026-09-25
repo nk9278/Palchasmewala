@@ -55,7 +55,26 @@ $orders = $stmt->fetchAll();
                             </div>
                             <div class="text-left sm:text-right">
                                 <p class="font-bold text-pcwRed text-xl mb-2"><?php echo format_price($o['grand_total']); ?></p>
-                                <a href="order.php?id=<?php echo $o['id']; ?>" class="inline-block border border-gray-300 text-gray-700 hover:bg-gray-50 font-bold px-4 py-1.5 rounded text-sm transition-colors">View Details</a>
+                                <div class="flex flex-col sm:flex-row gap-2 justify-end">
+                                    <a href="order.php?id=<?php echo $o['id']; ?>" class="inline-block border border-gray-300 text-gray-700 hover:bg-gray-50 font-bold px-4 py-1.5 rounded text-sm transition-colors text-center">View Details</a>                                    <?php
+                                    $inv = $pdo->prepare("SELECT id FROM invoices WHERE order_id = ?");
+                                    $inv->execute([$o['id']]);
+                                    $inv_id = $inv->fetchColumn();
+
+                                    // Lazy Generation Fallback
+                                    if (!$inv_id && !in_array($o['order_status'], ['cancelled'])) {
+                                        $gen = generate_invoice($pdo, $o['id']);
+                                        if ($gen['success']) {
+                                            $inv->execute([$o['id']]);
+                                            $inv_id = $inv->fetchColumn();
+                                        }
+                                    }
+
+                                    if($inv_id):
+                                    ?>
+                                        <a href="invoice.php?id=<?php echo $inv_id; ?>" class="inline-block border border-blue-600 text-blue-600 hover:bg-blue-50 font-bold px-4 py-1.5 rounded text-sm transition-colors text-center">View Invoice</a>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
                     <?php endforeach; ?>

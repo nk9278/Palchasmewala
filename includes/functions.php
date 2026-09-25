@@ -180,3 +180,58 @@ function require_admin($pdo) {
         die("403 Forbidden - Administrator access required.");
     }
 }
+
+
+/**
+ * Safely generate an invoice for a given order if one does not exist.
+ * Preserves historical order totals explicitly.
+ */
+function generate_invoice($pdo, $order_id) {
+    try {
+        $pdo->beginTransaction();
+
+        $chk = $pdo->prepare("SELECT id FROM invoices WHERE order_id = ?");
+        $chk->execute([$order_id]);
+        if ($chk->fetch()) {
+            $pdo->rollBack();
+            return ['success' => false, 'error' => 'Invoice already exists'];
+        }
+
+        $st = $pdo->prepare("SELECT subtotal, discount, shipping_charge, tax_amount, grand_total, currency FROM orders WHERE id = ? FOR UPDATE");
+        $st->execute([$order_id]);
+        $ord = $st->fetch();
+
+        if (!$ord) {
+            $pdo->rollBack();
+            return ['success' => false, 'error' => 'Order not found'];
+        }
+
+        $inv_number = 'PCW-INV-' . date('Y') . '-' . str_pad($order_id, 6, '0', STR_PAD_LEFT);
+
+        $ins = $pdo->prepare("INSERT INTO invoices (order_id, invoice_number, subtotal, discount, shipping_amount, tax_amount, grand_total, currency) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $ins->execute([
+            $order_id,
+            $inv_number,
+            $ord['subtotal'],
+            $ord['discount'],
+            $ord['shipping_charge'],
+            $ord['tax_amount'],
+            $ord['grand_total'],
+            $ord['currency']
+        ]);
+
+        $pdo->commit();
+        return ['success' => true, 'invoice_number' => $inv_number];
+
+    } catch (PDOException $e) {
+        $pdo->rollBack();
+        // Catch duplicate constraint cleanly
+        if ($e->getCode() == 23000) {
+             return ['success' => false, 'error' => 'Invoice already exists'];
+        }
+        return ['success' => false, 'error' => 'Database error generating invoice: ' . $e->getMessage()];
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        return ['success' => false, 'error' => 'Error generating invoice: ' . $e->getMessage()];
+    }
+}

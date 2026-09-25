@@ -30,15 +30,40 @@ if ($period === 'today') {
 }
 
 // 1. Sales Overview
-// Only counting non-cancelled, non-refunded orders as realized revenue
-$sales_stmt = $pdo->prepare("SELECT
-    COUNT(id) as total_orders,
-    COALESCE(SUM(grand_total), 0) as gross_revenue
-    FROM orders
-    WHERE created_at BETWEEN ? AND ?
-    AND order_status NOT IN ('cancelled', 'refunded', 'returned')");
-$sales_stmt->execute([$start_date, $end_date]);
-$sales = $sales_stmt->fetch();
+// Gross sales: Total value of orders that were genuinely placed (we exclude those cancelled before processing).
+// For the sake of this report, we will include 'refunded' and 'returned' orders in Gross Sales so that deducting Refunds works mathematically without double subtraction.
+$gross_stmt = $pdo->prepare("SELECT COUNT(id) as total_orders, COALESCE(SUM(grand_total), 0) as gross_sales FROM orders WHERE created_at BETWEEN ? AND ? AND order_status NOT IN ('cancelled')");
+$gross_stmt->execute([$start_date, $end_date]);
+$sales = $gross_stmt->fetch();
+
+// Refunds & Returns values
+$refund_stmt = $pdo->prepare("SELECT COUNT(id) as refund_count, COALESCE(SUM(amount), 0) as refund_total FROM refunds WHERE created_at BETWEEN ? AND ? AND status IN ('pending', 'processed')");
+$refund_stmt->execute([$start_date, $end_date]);
+$refunds = $refund_stmt->fetch();
+
+$net_revenue = $sales['gross_sales'] - $refunds['refund_total'];
+
+// Payment Summary
+// Here we look at the actual orders backing the payments
+$pay_stmt = $pdo->prepare("SELECT payment_method, payment_status, COALESCE(SUM(grand_total), 0) as total FROM orders WHERE created_at BETWEEN ? AND ? AND order_status NOT IN ('cancelled') GROUP BY payment_method, payment_status");
+$pay_stmt->execute([$start_date, $end_date]);
+$payment_breakdown = $pay_stmt->fetchAll();
+
+$cod_total = 0;
+$online_paid = 0;
+$pending_payments = 0;
+
+foreach($payment_breakdown as $p) {
+    if ($p['payment_method'] === 'COD') {
+        $cod_total += $p['total'];
+    } elseif ($p['payment_method'] === 'ONLINE') {
+        if ($p['payment_status'] === 'paid') {
+            $online_paid += $p['total'];
+        } else {
+            $pending_payments += $p['total'];
+        }
+    }
+}
 
 // 2. Order Status Breakdown
 $status_stmt = $pdo->prepare("SELECT order_status, COUNT(id) as count
@@ -101,23 +126,47 @@ $top_products = $top_prod->fetchAll();
         <h2 class="text-gray-500 text-sm font-bold">Report Period: <span class="text-gray-800"><?php echo date('d M Y', strtotime($start_date)); ?></span> to <span class="text-gray-800"><?php echo date('d M Y', strtotime($end_date)); ?></span></h2>
     </div>
 
-    <!-- Sales Overview Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
-            <p class="text-sm font-bold text-gray-500 uppercase tracking-wide">Valid Orders</p>
+    <!-- Sales & Revenue Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Valid Orders</p>
             <p class="text-3xl font-bold text-gray-800 mt-2"><?php echo $sales['total_orders']; ?></p>
         </div>
-        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-pcwGold">
-            <p class="text-sm font-bold text-gray-500 uppercase tracking-wide">Gross Revenue</p>
-            <p class="text-3xl font-bold text-gray-800 mt-2"><?php echo format_price($sales['gross_revenue']); ?></p>
+        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-indigo-500">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Gross Sales</p>
+            <p class="text-3xl font-bold text-gray-800 mt-2"><?php echo format_price($sales['gross_sales']); ?></p>
         </div>
-        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-blue-500">
-            <p class="text-sm font-bold text-gray-500 uppercase tracking-wide">Avg Order Value</p>
-            <p class="text-3xl font-bold text-gray-800 mt-2">
-                <?php echo $sales['total_orders'] > 0 ? format_price($sales['gross_revenue'] / $sales['total_orders']) : format_price(0); ?>
-            </p>
+        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-500">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Refunds (<?php echo $refunds['refund_count']; ?>)</p>
+            <p class="text-3xl font-bold text-red-600 mt-2">-<?php echo format_price($refunds['refund_total']); ?></p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide">Net Revenue</p>
+            <p class="text-3xl font-bold text-green-600 mt-2"><?php echo format_price($net_revenue); ?></p>
         </div>
     </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+
+        <!-- Payment Summary -->
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 md:col-span-1">
+            <h2 class="text-xl font-bold mb-4 border-b pb-2">Payment Summary</h2>
+            <div class="space-y-4 text-sm">
+                <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+                    <span class="font-bold text-gray-600">Online Paid</span>
+                    <span class="font-bold text-green-600"><?php echo format_price($online_paid); ?></span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+                    <span class="font-bold text-gray-600">COD Total</span>
+                    <span class="font-bold text-gray-800"><?php echo format_price($cod_total); ?></span>
+                </div>
+                <div class="flex justify-between items-center border-b border-gray-50 pb-2">
+                    <span class="font-bold text-gray-600">Pending Online</span>
+                    <span class="font-bold text-orange-500"><?php echo format_price($pending_payments); ?></span>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-4 italic">* Based on non-cancelled orders.</p>
+        </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Status Breakdown -->

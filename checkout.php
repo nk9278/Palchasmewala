@@ -132,9 +132,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 // 4. Create History
                 $pdo->prepare("INSERT INTO order_status_history (order_id, old_status, new_status, changed_by, note) VALUES (?, NULL, 'pending', ?, 'Order Placed')")->execute([$order_id, $user_id]);
-
-                // Commit
+                // Commit checkout transaction
                 $pdo->commit();
+
+                // Generate Invoice sequentially preserving snapshot boundaries
+                generate_invoice($pdo, $order_id);
 
                 // Clear Cart
                 $_SESSION['cart'] = [];

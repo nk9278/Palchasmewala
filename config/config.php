@@ -12,7 +12,7 @@ define('CURRENCY', '₹');
 // Database Credentials
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'pal_chasme_wale');
-define('DB_USER', 'root');
+define('DB_USER', 'testuser');
 define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 

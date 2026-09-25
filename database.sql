@@ -418,3 +418,27 @@ ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_orderitem` FOREIGN KEY (`or
 
 -- PHASE 6: Admin Roles
 ALTER TABLE `users` ADD COLUMN `role` enum('customer', 'admin') NOT NULL DEFAULT 'customer' AFTER `password`;
+
+
+-- PHASE 7: Invoicing & Accounting
+
+CREATE TABLE IF NOT EXISTS `invoices` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `order_id` int(11) NOT NULL,
+  `invoice_number` varchar(50) NOT NULL,
+  `invoice_date` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `subtotal` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `discount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `shipping_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `tax_amount` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `grand_total` decimal(10,2) NOT NULL DEFAULT 0.00,
+  `currency` varchar(10) NOT NULL DEFAULT 'INR',
+  `status` enum('generated', 'cancelled') NOT NULL DEFAULT 'generated',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_invoice_order` (`order_id`),
+  UNIQUE KEY `uniq_invoice_number` (`invoice_number`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `invoices` ADD CONSTRAINT `fk_invoice_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;

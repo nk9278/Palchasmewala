@@ -51,6 +51,18 @@ $items = $items->fetchAll();
 $addr = $pdo->prepare("SELECT * FROM order_addresses WHERE order_id = ?");
 $addr->execute([$id]);
 $addr = $addr->fetch();
+$inv_stmt = $pdo->prepare("SELECT id FROM invoices WHERE order_id = ?");
+$inv_stmt->execute([$id]);
+$invoice_id = $inv_stmt->fetchColumn();
+
+// Lazy Generation Fallback
+if (!$invoice_id && !in_array($order['order_status'], ['cancelled'])) {
+    $gen = generate_invoice($pdo, $id);
+    if ($gen['success']) {
+        $inv_stmt->execute([$id]);
+        $invoice_id = $inv_stmt->fetchColumn();
+    }
+}
 
 $history = $pdo->prepare("SELECT * FROM order_status_history WHERE order_id = ? ORDER BY created_at DESC");
 $history->execute([$id]);
@@ -59,8 +71,13 @@ $history = $history->fetchAll();
 <?php include __DIR__ . "/../includes/header.php"; ?>
     <div class="w-full max-w-6xl">
         <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold">Order: <?php echo e($order['order_number']); ?></h1>
-            <a href="index.php" class="bg-gray-300 px-4 py-2 rounded">Back</a>
+            <div class="flex items-center gap-4">
+                <h1 class="text-3xl font-bold">Order: <?php echo e($order['order_number']); ?></h1>
+                <?php if($invoice_id): ?>
+                    <a href="../../account/invoice.php?id=<?php echo $invoice_id; ?>" target="_blank" class="bg-blue-100 text-blue-800 border border-blue-200 font-bold py-1.5 px-4 rounded text-sm hover:bg-blue-200 transition-colors">View Invoice</a>
+                <?php endif; ?>
+            </div>
+            <a href="index.php" class="bg-gray-300 px-4 py-2 rounded font-bold text-sm">Back</a>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
