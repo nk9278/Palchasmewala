@@ -3,6 +3,9 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 
+require_admin($pdo);
+
+
 $search = $_GET['search'] ?? '';
 $cat_id = $_GET['category'] ?? '';
 
@@ -31,15 +34,8 @@ $products = $stmt->fetchAll();
 
 $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetchAll();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Manage Products - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800">
-    <div class="container mx-auto p-8">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Products</h1>
             <a href="create.php" class="bg-blue-600 text-white px-4 py-2 rounded">Add Product</a>
@@ -93,5 +89,5 @@ $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetc
         </div>
         <div class="mt-4"><a href="../index.php" class="text-gray-500">&larr; Back to Dashboard</a></div>
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

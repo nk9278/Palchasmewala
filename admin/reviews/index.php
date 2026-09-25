@@ -3,6 +3,9 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 
+require_admin($pdo);
+
+
 $search = $_GET['search'] ?? '';
 $status = $_GET['status'] ?? '';
 $rating = $_GET['rating'] ?? '';
@@ -46,15 +49,8 @@ $c_stmt->execute($params);
 $total_reviews = $c_stmt->fetchColumn();
 $total_pages = ceil($total_reviews / $per_page);
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Manage Reviews - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800">
-    <div class="container mx-auto p-8 max-w-7xl">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full max-w-7xl">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Product Reviews</h1>
             <a href="../index.php" class="bg-gray-200 text-gray-800 px-4 py-2 rounded">Back to Dashboard</a>
@@ -135,5 +131,5 @@ $total_pages = ceil($total_reviews / $per_page);
         <?php endif; ?>
 
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -4,6 +4,9 @@ require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/security.php';
 
+require_admin($pdo);
+
+
 $id = $_GET['id'] ?? 0;
 
 $stmt = $pdo->prepare("SELECT r.*, p.name as product_name, u.name as customer_name, u.email, o.order_number
@@ -30,15 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Review Details - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 p-8">
-    <div class="container mx-auto max-w-4xl">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full max-w-4xl">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Review Details</h1>
             <a href="index.php" class="bg-gray-300 px-4 py-2 rounded">Back</a>
@@ -96,5 +92,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         </div>
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

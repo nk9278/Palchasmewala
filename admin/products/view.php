@@ -4,6 +4,9 @@ require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/security.php';
 
+require_admin($pdo);
+
+
 $id = $_GET['id'] ?? 0;
 $stmt = $pdo->prepare("SELECT p.*, c.name as cat_name, b.name as brand_name
                       FROM products p
@@ -73,15 +76,8 @@ $images->execute([$id]);
 $images = $images->fetchAll();
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>View Product - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 p-8">
-    <div class="container mx-auto">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Product: <?php echo e($product['name']); ?></h1>
             <div>
@@ -174,5 +170,5 @@ $images = $images->fetchAll();
         </div>
 
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

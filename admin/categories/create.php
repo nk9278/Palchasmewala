@@ -4,6 +4,9 @@ require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/security.php';
 
+require_admin($pdo);
+
+
 $cats = $pdo->query("SELECT id, name FROM categories WHERE parent_id IS NULL")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,15 +26,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Add Category - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800">
-    <div class="container mx-auto p-8 max-w-lg">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full max-w-lg">
         <h1 class="text-3xl font-bold mb-6">Add Category</h1>
         <form method="post" class="bg-white p-6 rounded shadow">
             <?php echo csrf_field(); ?>
@@ -58,5 +54,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <button type="submit" class="w-full bg-blue-600 text-white p-2 rounded">Save</button>
         </form>
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

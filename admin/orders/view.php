@@ -4,6 +4,9 @@ require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/security.php';
 
+require_admin($pdo);
+
+
 $id = $_GET['id'] ?? 0;
 
 $stmt = $pdo->prepare("SELECT o.*, u.name as customer_name, u.email as customer_email, u.phone as customer_phone FROM orders o JOIN users u ON o.user_id = u.id WHERE o.id = ?");
@@ -53,15 +56,8 @@ $history = $pdo->prepare("SELECT * FROM order_status_history WHERE order_id = ? 
 $history->execute([$id]);
 $history = $history->fetchAll();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>View Order - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 p-8">
-    <div class="container mx-auto max-w-6xl">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full max-w-6xl">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Order: <?php echo e($order['order_number']); ?></h1>
             <a href="index.php" class="bg-gray-300 px-4 py-2 rounded">Back</a>
@@ -177,5 +173,5 @@ $history = $history->fetchAll();
 
         </div>
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -3,6 +3,9 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 
+require_admin($pdo);
+
+
 $query = "SELECT t.*, p.name as product_name, v.variant_name, v.sku
           FROM inventory_transactions t
           JOIN products p ON t.product_id = p.id
@@ -10,15 +13,8 @@ $query = "SELECT t.*, p.name as product_name, v.variant_name, v.sku
           ORDER BY t.created_at DESC LIMIT 100";
 $history = $pdo->query($query)->fetchAll();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Inventory History - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800">
-    <div class="container mx-auto p-8">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Inventory Transaction History</h1>
             <a href="index.php" class="bg-gray-600 text-white px-4 py-2 rounded">Back to Inventory</a>
@@ -53,5 +49,5 @@ $history = $pdo->query($query)->fetchAll();
             </table>
         </div>
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

@@ -158,3 +158,25 @@ function cancel_order($pdo, $order_id, $reason, $changed_by = null) {
         return ['success' => false, 'error' => "Failed to cancel order: " . $e->getMessage()];
     }
 }
+
+/**
+ * Check if current user is an admin
+ */
+function is_admin($pdo) {
+    if (!is_logged_in()) return false;
+    $user_id = current_user_id();
+    $stmt = $pdo->prepare("SELECT role FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $role = $stmt->fetchColumn();
+    return $role === 'admin';
+}
+
+/**
+ * Require admin access or redirect
+ */
+function require_admin($pdo) {
+    if (!is_admin($pdo)) {
+        header("HTTP/1.1 403 Forbidden");
+        die("403 Forbidden - Administrator access required.");
+    }
+}

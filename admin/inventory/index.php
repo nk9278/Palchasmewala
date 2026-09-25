@@ -3,6 +3,9 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 
+require_admin($pdo);
+
+
 $search = $_GET['search'] ?? '';
 
 $query = "SELECT v.*, p.name as product_name
@@ -22,15 +25,8 @@ $stmt = $pdo->prepare($query);
 $stmt->execute($params);
 $inventory = $stmt->fetchAll();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Inventory - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800">
-    <div class="container mx-auto p-8">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Inventory Overview</h1>
             <div>
@@ -78,5 +74,5 @@ $inventory = $stmt->fetchAll();
         </div>
         <div class="mt-4"><a href="../index.php" class="text-gray-500">&larr; Back to Dashboard</a></div>
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>

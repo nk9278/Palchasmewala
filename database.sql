@@ -415,3 +415,6 @@ ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_user` FOREIGN KEY (`user_id
 ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_prod` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE;
 ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;
 ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_orderitem` FOREIGN KEY (`order_item_id`) REFERENCES `order_items`(`id`) ON DELETE CASCADE;
+
+-- PHASE 6: Admin Roles
+ALTER TABLE `users` ADD COLUMN `role` enum('customer', 'admin') NOT NULL DEFAULT 'customer' AFTER `password`;

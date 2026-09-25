@@ -4,6 +4,9 @@ require_once __DIR__ . '/../../includes/db.php';
 require_once __DIR__ . '/../../includes/functions.php';
 require_once __DIR__ . '/../../includes/security.php';
 
+require_admin($pdo);
+
+
 $id = $_GET['id'] ?? 0;
 
 $stmt = $pdo->prepare("SELECT r.*, o.order_number, u.name as customer_name, u.email as customer_email, u.phone as customer_phone
@@ -45,15 +48,8 @@ $items = $pdo->prepare("SELECT ri.*, oi.product_name, oi.variant_name, oi.sku, o
 $items->execute([$id]);
 $items = $items->fetchAll();
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Manage Return - Admin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-800 p-8">
-    <div class="container mx-auto max-w-5xl">
+<?php include __DIR__ . "/../includes/header.php"; ?>
+    <div class="w-full max-w-5xl">
         <div class="flex justify-between items-center mb-6">
             <h1 class="text-3xl font-bold">Return Request #RET-<?php echo e($return_req['id']); ?></h1>
             <a href="index.php" class="bg-gray-300 px-4 py-2 rounded">Back</a>
@@ -117,5 +113,5 @@ $items = $items->fetchAll();
 
         </div>
     </div>
-</body>
-</html>
+
+<?php include __DIR__ . '/../includes/footer.php'; ?>
