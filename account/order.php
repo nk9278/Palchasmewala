@@ -49,7 +49,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 // Fetch related data
 $items_stmt = $pdo->prepare("SELECT * FROM order_items WHERE order_id = ?");
 $items_stmt->execute([$order_id]);
-$items = $items_stmt->fetchAll();
+$items_raw = $items_stmt->fetchAll();
+
+// Fetch all reviews for this order and user in one query
+$rev_stmt = $pdo->prepare("SELECT order_item_id FROM product_reviews WHERE user_id = ? AND order_id = ?");
+$rev_stmt->execute([$user_id, $order_id]);
+$reviewed_items = $rev_stmt->fetchAll(PDO::FETCH_COLUMN);
+
+$items = [];
+foreach($items_raw as $i) {
+    $i['has_review'] = in_array($i['id'], $reviewed_items);
+    $items[] = $i;
+}
 
 $addr_stmt = $pdo->prepare("SELECT * FROM order_addresses WHERE order_id = ?");
 $addr_stmt->execute([$order_id]);
@@ -86,8 +97,18 @@ $address = $addr_stmt->fetch();
                                     <p class="text-xs text-gray-500">Option: <?php echo e($i['variant_name']); ?> | SKU: <?php echo e($i['sku']); ?></p>
                                     <p class="text-gray-600 mt-1">Qty: <?php echo $i['quantity']; ?> x <?php echo format_price($i['unit_price']); ?></p>
                                 </div>
-                                <div class="font-bold text-gray-800">
+                                <div class="font-bold text-gray-800 text-right">
                                     <?php echo format_price($i['line_total']); ?>
+
+                                    <?php if($order['order_status'] === 'delivered'): ?>
+                                        <div class="mt-2">
+                                            <?php if($i['has_review']): ?>
+                                                <span class="text-xs text-green-600 font-bold"><i class="fa-solid fa-check"></i> Review Submitted</span>
+                                            <?php else: ?>
+                                                <a href="review.php?order_id=<?php echo $order_id; ?>&item_id=<?php echo $i['id']; ?>" class="text-xs text-blue-600 hover:underline font-bold">Write Review</a>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         <?php endforeach; ?>

@@ -34,6 +34,15 @@ $var_stmt = $pdo->prepare("SELECT * FROM product_variants WHERE product_id = ? A
 $var_stmt->execute([$p_id]);
 $variants = $var_stmt->fetchAll();
 
+// Reviews
+$rev_agg = $pdo->prepare("SELECT COUNT(*) as count, AVG(rating) as avg_rating FROM product_reviews WHERE product_id = ? AND status = 'approved'");
+$rev_agg->execute([$p_id]);
+$review_stats = $rev_agg->fetch();
+
+$reviews = $pdo->prepare("SELECT r.*, u.name as customer_name FROM product_reviews r JOIN users u ON r.user_id = u.id WHERE r.product_id = ? AND r.status = 'approved' ORDER BY r.created_at DESC LIMIT 50");
+$reviews->execute([$p_id]);
+$approved_reviews = $reviews->fetchAll();
+
 // Construct JSON for variants to handle dynamic price/stock on frontend
 $variant_data = [];
 foreach ($variants as $v) {
@@ -82,6 +91,23 @@ $variant_json = json_encode($variant_data);
                     <?php endif; ?>
 
                     <h1 class="text-2xl sm:text-4xl font-bold text-pcwBlack mb-2"><?php echo e($product['name']); ?></h1>
+
+                    <?php if($review_stats['count'] > 0): ?>
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="text-pcwGold text-sm">
+                                <?php
+                                $avg = round($review_stats['avg_rating'], 1);
+                                $full = floor($avg);
+                                $half = ($avg - $full) >= 0.5 ? 1 : 0;
+                                $empty = 5 - $full - $half;
+                                echo str_repeat('<i class="fa-solid fa-star"></i>', $full);
+                                if($half) echo '<i class="fa-solid fa-star-half-stroke"></i>';
+                                echo str_repeat('<i class="fa-regular fa-star"></i>', $empty);
+                                ?>
+                            </div>
+                            <span class="text-xs text-gray-500 font-bold"><?php echo $avg; ?> (<?php echo $review_stats['count']; ?> reviews)</span>
+                        </div>
+                    <?php endif; ?>
 
                     <p class="text-gray-500 text-sm mb-4" id="display-sku">SKU: <?php echo e($product['sku']); ?></p>
 
@@ -145,6 +171,46 @@ $variant_json = json_encode($variant_data);
             </div>
         </div>
         <?php endif; ?>
+
+        <!-- Customer Reviews -->
+        <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10 mb-12">
+            <div class="flex items-center justify-between border-b pb-4 mb-6">
+                <h2 class="text-2xl font-bold text-pcwBlack">Customer Reviews</h2>
+                <?php if($review_stats['count'] > 0): ?>
+                    <div class="text-pcwBlack font-bold text-lg"><?php echo round($review_stats['avg_rating'], 1); ?> <span class="text-pcwGold text-sm"><i class="fa-solid fa-star"></i></span></div>
+                <?php endif; ?>
+            </div>
+
+            <?php if(empty($approved_reviews)): ?>
+                <p class="text-gray-500 italic">No reviews yet for this product.</p>
+            <?php else: ?>
+                <div class="space-y-6">
+                    <?php foreach($approved_reviews as $r): ?>
+                        <div class="border-b border-gray-50 pb-6 last:border-0">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <?php
+                                        $parts = explode(' ', trim($r['customer_name']));
+                                        $safe_name = $parts[0] . (isset($parts[1]) ? ' ' . strtoupper(substr($parts[1], 0, 1)) . '.' : '');
+                                    ?>
+                                    <span class="font-bold text-gray-800"><?php echo e($safe_name); ?></span>
+                                    <span class="text-xs text-gray-400 ml-2"><?php echo date('d M Y', strtotime($r['created_at'])); ?></span>
+                                </div>
+                                <div class="text-pcwGold text-xs">
+                                    <?php echo str_repeat('<i class="fa-solid fa-star"></i>', $r['rating']) . str_repeat('<i class="fa-regular fa-star text-gray-300"></i>', 5 - $r['rating']); ?>
+                                </div>
+                            </div>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-3">
+                                <?php echo nl2br(e($r['review'])); ?>
+                            </p>
+                            <?php if($r['image_path']): ?>
+                                <img src="<?php echo e($r['image_path']); ?>" alt="Review Image" class="w-24 h-24 object-cover rounded-lg border border-gray-200">
+                            <?php endif; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
 
     </div>
 </div>

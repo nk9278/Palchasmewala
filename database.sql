@@ -389,3 +389,29 @@ ALTER TABLE `returns` ADD CONSTRAINT `fk_return_user` FOREIGN KEY (`user_id`) RE
 ALTER TABLE `return_items` ADD CONSTRAINT `fk_returnitem_return` FOREIGN KEY (`return_id`) REFERENCES `returns`(`id`) ON DELETE CASCADE;
 ALTER TABLE `return_items` ADD CONSTRAINT `fk_returnitem_orderitem` FOREIGN KEY (`order_item_id`) REFERENCES `order_items`(`id`) ON DELETE RESTRICT;
 ALTER TABLE `refunds` ADD CONSTRAINT `fk_refund_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;
+
+-- PHASE 5: Reviews and Ratings
+
+CREATE TABLE IF NOT EXISTS `product_reviews` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `order_item_id` int(11) NOT NULL,
+  `rating` tinyint(1) NOT NULL,
+  `review` text NOT NULL,
+  `image_path` varchar(255) DEFAULT NULL,
+  `status` enum('pending', 'approved', 'rejected') NOT NULL DEFAULT 'pending',
+  `admin_note` text,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uniq_user_item` (`user_id`, `order_item_id`),
+  KEY `product_id` (`product_id`),
+  KEY `order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE;
+ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_prod` FOREIGN KEY (`product_id`) REFERENCES `products`(`id`) ON DELETE CASCADE;
+ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_order` FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE;
+ALTER TABLE `product_reviews` ADD CONSTRAINT `fk_rev_orderitem` FOREIGN KEY (`order_item_id`) REFERENCES `order_items`(`id`) ON DELETE CASCADE;
