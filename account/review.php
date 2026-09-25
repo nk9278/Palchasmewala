@@ -21,8 +21,23 @@ $stmt = $pdo->prepare("SELECT o.order_status, i.product_id, i.product_name, p.sl
 $stmt->execute([$order_id, $item_id, $user_id]);
 $details = $stmt->fetch();
 
-if (!$details || $details['order_status'] !== 'delivered') {
-    die("You cannot review this item. It may not exist, may not belong to you, or has not been delivered.");
+if (!$details || !in_array($details['order_status'], ['delivered', 'completed'])) {
+    die("You cannot review this item. It may not exist, may not belong to you, or the order is not in a delivered state.");
+}
+
+// Check if this item has an approved/received/refunded return
+$ret_chk = $pdo->prepare("SELECT SUM(ri.quantity) FROM return_items ri JOIN returns r ON ri.return_id = r.id WHERE ri.order_item_id = ? AND r.status IN ('approved', 'received', 'refunded')");
+$ret_chk->execute([$item_id]);
+$returned_qty = (int)$ret_chk->fetchColumn();
+
+$orig_qty_chk = $pdo->prepare("SELECT quantity FROM order_items WHERE id = ?");
+$orig_qty_chk->execute([$item_id]);
+$orig_qty = (int)$orig_qty_chk->fetchColumn();
+
+// If they returned ALL items of this order item, they can't review it.
+// If they kept at least one, they can.
+if ($returned_qty >= $orig_qty) {
+    die("You cannot review this item because it was fully returned or refunded.");
 }
 
 $product_id = $details['product_id'];

@@ -59,6 +59,13 @@ $reviewed_items = $rev_stmt->fetchAll(PDO::FETCH_COLUMN);
 $items = [];
 foreach($items_raw as $i) {
     $i['has_review'] = in_array($i['id'], $reviewed_items);
+
+    // Check if fully returned
+    $ret_chk = $pdo->prepare("SELECT SUM(ri.quantity) FROM return_items ri JOIN returns r ON ri.return_id = r.id WHERE ri.order_item_id = ? AND r.status IN ('approved', 'received', 'refunded')");
+    $ret_chk->execute([$i['id']]);
+    $returned_qty = (int)$ret_chk->fetchColumn();
+    $i['fully_returned'] = $returned_qty >= $i['quantity'];
+
     $items[] = $i;
 }
 
@@ -100,7 +107,7 @@ $address = $addr_stmt->fetch();
                                 <div class="font-bold text-gray-800 text-right">
                                     <?php echo format_price($i['line_total']); ?>
 
-                                    <?php if($order['order_status'] === 'delivered'): ?>
+                                    <?php if(in_array($order['order_status'], ['delivered', 'completed']) && !$i['fully_returned']): ?>
                                         <div class="mt-2">
                                             <?php if($i['has_review']): ?>
                                                 <span class="text-xs text-green-600 font-bold"><i class="fa-solid fa-check"></i> Review Submitted</span>
