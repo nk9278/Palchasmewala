@@ -176,7 +176,7 @@ function is_admin($pdo) {
  */
 function require_admin($pdo) {
     if (!is_admin($pdo)) {
-        header("HTTP/1.1 403 Forbidden");
+        http_response_code(403);
         die("403 Forbidden - Administrator access required.");
     }
 }
